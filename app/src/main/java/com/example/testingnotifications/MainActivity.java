@@ -1,8 +1,11 @@
 package com.example.testingnotifications;
 
+import static androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.RemoteInput;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,6 +18,8 @@ import android.view.WindowInsets;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String KEY_TEXT_REPLY = "key_text_reply";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,8 +27,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
+        // create the notification channel
         createNotificationChannel();
 
+        // define a pending Intent that will launch once the notification is clicked
         Intent intent = new Intent(this, SideActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
@@ -35,8 +42,9 @@ public class MainActivity extends AppCompatActivity {
                 .setContentText("Much longer text that cannot fit one line...")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
+                .addAction(R.drawable.ic_launcher_foreground, "Open Activity", pendingIntent);
 
+        // define the notification manager
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
         // notificationId is a unique int for each notification that you must define
